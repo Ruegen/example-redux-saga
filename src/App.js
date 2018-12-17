@@ -1,12 +1,36 @@
-import React, { Component } from 'react';
-import { createStore, applyMiddleware } from 'redux'
-import createSagaMiddleware from 'redux-saga'
-import './App.css';
+import React, {useEffect} from 'react';
+import {connect} from 'react-redux'
+import * as TYPES from './types'
+
 
 const App = (props) => {
-  return <div class="App">
 
+  useEffect(() => {
+    props.fetchItems()
+  },[])
+
+  return <div className="App">
+    <ul>
+    {props.items.map(item => {
+      return <li key={item.id}>{item.text}</li>
+    })}
+    </ul>
   </div>
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    items: state.items
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchItems: () =>
+      dispatch({
+        type: TYPES.FETCH_ITEMS_REQUEST
+      })
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
